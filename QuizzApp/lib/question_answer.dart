@@ -8,14 +8,16 @@ class QuestionAnswer extends StatelessWidget {
   }) : super(key: key);
 
   final String text;
-  final void Function() onAnswerTap;
+  final void Function(String answer) onAnswerTap;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ElevatedButton(
-        onPressed: onAnswerTap,
+        onPressed: () {
+          onAnswerTap(text);
+        },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.deepPurpleAccent,

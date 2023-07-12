@@ -4,24 +4,34 @@ import 'package:quiz_app/models/quiz_question.dart';
 import 'package:quiz_app/question_answer.dart';
 
 class QuizQuestionsScreen extends StatefulWidget {
-  const QuizQuestionsScreen(this.onAnswerFinished, {Key? key}) : super(key: key);
+  QuizQuestionsScreen({required this.onQuestionsEnded, Key? key}) : super(key: key);
 
-  final void Function() onAnswerFinished;
+  void Function(List<String> anserws) onQuestionsEnded;
 
   @override
   _QuizQuestionsScreenState createState() => _QuizQuestionsScreenState();
 }
 
 class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
-  @override
   int currentQuestionIndex = 0;
 
-  void changeQuestion() {
+  final List<String> selectedAnswers = [];
+
+  void changeQuestion(String answer) {
     setState(() {
       currentQuestionIndex++;
+
+      selectedAnswers.add(answer);
+
+      if (selectedAnswers.length == questions.length) {
+        widget.onQuestionsEnded(selectedAnswers);
+      }
     });
   }
 
+  // TO DO: save the results ansewers in a list
+
+  @override
   Widget build(BuildContext context) {
     QuizQuestion currentQuestion = questions[currentQuestionIndex];
 
@@ -45,7 +55,7 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
             const SizedBox(
               height: 40,
             ),
-            ...currentQuestion.answers.map((answer) {
+            ...currentQuestion.getAnswersShuffled().map((answer) {
               return QuestionAnswer(text: answer, onAnswerTap: changeQuestion);
             }),
           ],

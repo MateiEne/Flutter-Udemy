@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/quiz_questions_screen.dart';
+import 'package:quiz_app/result_screen.dart';
 import 'package:quiz_app/start_screen.dart';
 
 class Quiz extends StatefulWidget {
@@ -21,9 +22,17 @@ class _QuizState extends State<Quiz> {
     super.initState();
   }
 
+  void onQuestionsEnded(List<String> answers) {
+    setState(() {
+      currentScreen = ResultScreen(answers);
+    });
+  }
+
   void changeScreen() {
     setState(() {
-      currentScreen = QuizQuestionsScreen(changeScreen);
+      currentScreen = QuizQuestionsScreen(
+        onQuestionsEnded: onQuestionsEnded,
+      );
     });
   }
 
