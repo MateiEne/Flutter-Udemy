@@ -23,13 +23,13 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
 
       selectedAnswers.add(answer);
 
+      print(selectedAnswers);
+
       if (selectedAnswers.length == questions.length) {
         widget.onQuestionsEnded(selectedAnswers);
       }
     });
   }
-
-  // TO DO: save the results ansewers in a list
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
               currentQuestion.text,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Colors.white,
+                color: Colors.white60,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),

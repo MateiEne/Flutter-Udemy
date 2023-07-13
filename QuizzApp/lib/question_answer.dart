@@ -20,12 +20,20 @@ class QuestionAnswer extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.deepPurpleAccent,
+          backgroundColor: Colors.black38,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
         ),
-        child: Text(text),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8.0,
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }

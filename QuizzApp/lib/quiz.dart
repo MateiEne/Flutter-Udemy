@@ -22,9 +22,23 @@ class _QuizState extends State<Quiz> {
     super.initState();
   }
 
+  void onRestartButtonPressed() {
+    setState(() {
+      currentScreen = QuizQuestionsScreen(
+        onQuestionsEnded: onQuestionsEnded,
+      );
+    });
+  }
+
   void onQuestionsEnded(List<String> answers) {
     setState(() {
-      currentScreen = ResultScreen(answers);
+      // am primit raspunsurile selectate de utilizator.
+      // in result_screen arat cate raspunsuri sunt corecte
+
+      currentScreen = ResultScreen(
+        answers,
+        onRestartButtonPressed,
+      );
     });
   }
 
