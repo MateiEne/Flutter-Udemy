@@ -13,30 +13,74 @@ class ExpenseApp extends StatefulWidget {
 class _ExpenseAppState extends State<ExpenseApp> {
   final List<Expense> expenses = [
     Expense(
-      title: 'hamburger',
-      amount: 30.5,
+      title: 'test',
+      amount: 25,
       date: DateTime.now(),
-      category: Category.food,
+      category: ExpenseCategory.food,
     ),
     Expense(
-      title: 'plane tickets',
-      amount: 80.132,
+      title: 'test2',
+      amount: 25,
       date: DateTime.now(),
-      category: Category.travel,
+      category: ExpenseCategory.food,
     ),
   ];
 
-  void _openAddExpenseOverlay() {
-    print('intrat');
+  Widget? mainScreen;
 
+  void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (modalBottomSheetContext) => const OverlayScreen(),
+      builder: (modalBottomSheetContext) => OverlayScreen(
+        onAddExpense: _addExpense,
+      ),
+    );
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      expenses.add(expense);
+    });
+  }
+
+  void _removeExpense(Expense expense) {
+    final expenseIndex = expenses.indexOf(expense);
+
+    setState(() {
+      expenses.remove(expense);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 3),
+        content: const Text('Expense deleted!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              expenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (expenses.isNotEmpty) {
+      mainScreen = ExpenseList(
+        expenses: expenses,
+        onRemoveExpense: _removeExpense,
+      );
+    } else {
+      mainScreen = const Center(
+        child: Text('No expenses added yet. Start adding some!'),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense Tracker'),
@@ -51,7 +95,7 @@ class _ExpenseAppState extends State<ExpenseApp> {
         children: [
           const Text('Chart'),
           Expanded(
-            child: ExpenseList(expenses: expenses),
+            child: mainScreen!,
           ),
         ],
       ),

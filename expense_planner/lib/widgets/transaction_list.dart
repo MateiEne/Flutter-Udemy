@@ -4,33 +4,36 @@ import 'package:intl/intl.dart';
 import '../model/transaction.dart';
 
 class TransactionList extends StatelessWidget {
-  const TransactionList(this.transactions, this.deleteTransaction, {Key? key}) : super(key: key);
+  const TransactionList(this._transactions, this.deleteTransaction, {Key? key}) : super(key: key);
 
-  final List<Transaction> transactions;
+  final List<Transaction> _transactions;
   final Function deleteTransaction;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
-      child: transactions.isEmpty
-          ? Column(
-              children: <Widget>[
-                const Text('No transactions added yet'),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+      child: _transactions.isEmpty
+          ? LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Column(
+                  children: <Widget>[
+                    const Text('No transactions added yet'),
+                    SizedBox(
+                      height: constraints.maxHeight * 0.1,
+                    ),
+                    SizedBox(
+                      height: constraints.maxHeight * 0.6,
+                      child: Image.asset(
+                        'assets/images/waiting.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                );
+              },
             )
           : ListView.builder(
-              itemCount: transactions.length,
+              itemCount: _transactions.length,
               itemBuilder: (BuildContext context, int index) {
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
@@ -40,25 +43,33 @@ class TransactionList extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: FittedBox(
-                          child: Text("\$${transactions[index].amount}"),
+                          child: Text("\$${_transactions[index].amount}"),
                         ),
                       ),
                     ),
                     title: Text(
-                      transactions[index].title,
+                      _transactions[index].title,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      DateFormat.yMMMd().format(transactions[index].date),
+                      DateFormat.yMMMd().format(_transactions[index].date),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        return deleteTransaction(transactions[index]);
-                      },
-                    ),
+                    trailing: MediaQuery.of(context).size.width > 400
+                        ? FlatButton.icon(
+                            onPressed: () => deleteTransaction(_transactions[index]),
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                            label: Text('Delete'),
+                          )
+                        : IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                            onPressed: () => deleteTransaction(_transactions[index]),
+                          ),
                   ),
                 );
               },

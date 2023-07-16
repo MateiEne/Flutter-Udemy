@@ -52,58 +52,65 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 40,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                ),
+                onSubmitted: (_) => _submitTransaction(),
               ),
-              onSubmitted: (_) => _submitTransaction(),
-            ),
-            TextField(
-              controller: _amountController,
-              decoration: const InputDecoration(
-                labelText: 'amount',
+              TextField(
+                controller: _amountController,
+                decoration: const InputDecoration(
+                  labelText: 'amount',
+                ),
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) => _submitTransaction(),
               ),
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitTransaction(),
-            ),
-            SizedBox(
-              height: 70,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    _selectedDate == null
-                        ? 'No Date Chosen!'
-                        : 'Picked Date: ${DateFormat.yMd().format(_selectedDate!)}',
-                  ),
-                  FlatButton(
-                    onPressed: _presentDatePicker,
-                    child: const Text(
-                      'Choode date',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+              SizedBox(
+                height: 70,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      _selectedDate == null
+                          ? 'No Date Chosen!'
+                          : 'Picked Date: ${DateFormat.yMd().format(_selectedDate!)}',
                     ),
-                    textColor: Theme.of(context).primaryColor,
-                  ),
-                ],
+                    FlatButton(
+                      onPressed: _presentDatePicker,
+                      child: const Text(
+                        'Choode date',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      textColor: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              child: const Text('Add expense'),
-              color: Theme.of(context).primaryColor,
-              textColor: Colors.white,
-              onPressed: _submitTransaction,
-            ),
-          ],
+              RaisedButton(
+                child: const Text('Add expense'),
+                color: Theme.of(context).primaryColor,
+                textColor: Colors.white,
+                onPressed: _submitTransaction,
+              ),
+            ],
+          ),
         ),
       ),
     );
