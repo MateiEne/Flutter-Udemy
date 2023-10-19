@@ -1,4 +1,5 @@
 import 'package:expense_planner/UI/addExpenseOverlay/overlay_screen.dart';
+import 'package:expense_planner/UI/chart/chart.dart';
 import 'package:expense_planner/UI/expenseList/expense_list.dart';
 import 'package:expense_planner/models/expense.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _ExpenseAppState extends State<ExpenseApp> {
       ),
       body: Column(
         children: [
-          const Text('Chart'),
+          Chart(expenses: expenses),
           Expanded(
             child: mainScreen!,
           ),
