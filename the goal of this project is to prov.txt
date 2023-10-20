@@ -1,0 +1,9 @@
+the goal of this project is to provide blind people with the tools to navigate their environment more confidently and independently. We plan to develop an app that uses a camera to detect objects and read aloud the information it finds. This will enable blind people to identify objects in their environment and better understand their surroundings.
+
+Using object recognition algorithms and natural language processing, this app will be able to enable blind people to interact with their environmnet in a new and innovative way. The app will use machine learning to detect objects in the user's field of viewm and then read aloud what it is seeing, such as the name of a store or a street sign.
+
+The app will alse be able to provide navigation assistancem using GPS and audio cues to guide the user to their desired location. It will be able to recognize obstacles and provide audio warnings to alert the user of possible hazards.
+
+The application will also be designed to be intuitive and user-friendly, allowing users to easily customize the functionality and settings to suit their needs. The app will be designed with accessibility in mind and will be compatible with existing assistive technology.
+
+Ultimately, this project will help blind people to navigate their environment with confidence, enabling them to explore and enjoy new experiences. The app will be built with quality and reliability in mind, and will never return invalid JSON objects.
