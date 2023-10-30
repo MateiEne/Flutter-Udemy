@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/data/dumy_data.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories.dart';
+import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
+
+const kInitialFilters = {
+  Filters.glutenFree: false,
+  Filters.lactoseFree: false,
+  Filters.vegetarian: false,
+  Filters.vegan: false,
+};
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedTabIndex = 0;
 
   final List<Meal> _favoriteMeals = [];
+  Map<Filters, bool> _selectedFilters = kInitialFilters;
 
   void _onSelectTab(int index) {
     setState(() {
@@ -33,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onToggleMealToFavorite(Meal meal) {
-    bool isContaing = _favoriteMeals.contains(meal);
+    bool isContaining = _favoriteMeals.contains(meal);
 
-    if (isContaing) {
+    if (isContaining) {
       setState(() {
         _favoriteMeals.remove(meal);
         _showInfoMessage("${meal.title} has been removed from favorites");
@@ -48,10 +58,49 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onSelectScreen(String identifier) async {
+    Navigator.of(context).pop();
+
+    if (identifier == 'filters') {
+      final Map<Filters, bool>? _preferences = await Navigator.of(context).push<Map<Filters, bool>>(
+        MaterialPageRoute(
+          builder: (BuildContext context) => FiltersScreen(
+            currentFilters: _selectedFilters,
+          ),
+        ),
+      );
+
+      setState(() {
+        _selectedFilters = _preferences ?? kInitialFilters;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<Meal> _availableMeals = dummyMeals.where((meal) {
+      if (_selectedFilters[Filters.glutenFree]! && !meal.isGlutenFree) {
+        return false;
+      }
+
+      if (_selectedFilters[Filters.lactoseFree]! && !meal.isLactoseFree) {
+        return false;
+      }
+
+      if (_selectedFilters[Filters.vegan]! && !meal.isVegan) {
+        return false;
+      }
+
+      if (_selectedFilters[Filters.vegetarian]! && !meal.isVegetarian) {
+        return false;
+      }
+
+      return true;
+    }).toList();
+
     Widget content = CategoriesScreen(
       onToggleMealToFavorite: _onToggleMealToFavorite,
+      availableMeals: _availableMeals,
     );
     String appBarTitle = 'Categories';
 
@@ -68,7 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(appBarTitle),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(
+        onSelectScreen: _onSelectScreen,
+      ),
       body: content,
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
