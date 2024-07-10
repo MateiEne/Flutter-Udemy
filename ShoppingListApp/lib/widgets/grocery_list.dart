@@ -30,34 +30,52 @@ class _GroceryListState extends State<GroceryList> {
   Future<void> _loadItems() async {
     final Uri url = Uri.https('flutter-groceries-6555c-default-rtdb.firebaseio.com', 'shopping-list.json');
 
-    final http.Response response = await http.get(url);
+    // the response can have an other error (e.g. no internet connection, or wrong domain)
+    // so for that I should use try catch.
+    // important, use try only on the code that could generate an error, not on the whole code
+    try {
+      final http.Response response = await http.get(url);
 
-    if (response.statusCode >= 400) {
+      if (response.statusCode >= 400) {
+        setState(() {
+          _serverError = "Failed to fetch data. Please try again later.";
+        });
+      }
+
+      if (response.body == 'null') {
+        setState(() {
+          _isLoading = false;
+        });
+
+        return;
+      }
+      final Map<String, dynamic> listData = json.decode(response.body);
+      final List<GroceryItem> loadedData = [];
+
+      for (final item in listData.entries) {
+        final category =
+            categories.entries
+                .firstWhere((categoryItem) => categoryItem.value.name == item.value['category'])
+                .value;
+        loadedData.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: int.parse(item.value['quantity']),
+            category: category,
+          ),
+        );
+      }
+
       setState(() {
-        _serverError = "Failed to fetch data. Please try again later.";
+        _groceryItems = loadedData;
+        _isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _serverError = "Something went wrong. Please try again later.";
       });
     }
-
-    final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> loadedData = [];
-
-    for (final item in listData.entries) {
-      final category =
-          categories.entries.firstWhere((categoryItem) => categoryItem.value.name == item.value['category']).value;
-      loadedData.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: int.parse(item.value['quantity']),
-          category: category,
-        ),
-      );
-    }
-
-    setState(() {
-      _groceryItems = loadedData;
-      _isLoading = false;
-    });
   }
 
   Future<void> _addItem() async {
@@ -77,10 +95,22 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-  void _removeItem(GroceryItem item) {
+  Future<void> _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+
+    final Uri url = Uri.https('flutter-groceries-6555c-default-rtdb.firebaseio.com', 'shopping-list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      /// Optional can show a snack bar with an error message
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
   }
 
   @override
@@ -103,7 +133,10 @@ class _GroceryListState extends State<GroceryList> {
           return Dismissible(
             direction: DismissDirection.endToStart,
             background: Container(
-              color: Theme.of(context).colorScheme.error,
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .error,
             ),
             onDismissed: (direction) {
               _removeItem(_groceryItems[index]);
