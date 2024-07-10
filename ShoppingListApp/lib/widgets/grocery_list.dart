@@ -16,6 +16,7 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -29,8 +30,6 @@ class _GroceryListState extends State<GroceryList> {
 
     final http.Response response = await http.get(url);
     final Map<String, dynamic> listData = json.decode(response.body);
-
-    print(response.body);
 
     final List<GroceryItem> loadedData = [];
 
@@ -49,6 +48,7 @@ class _GroceryListState extends State<GroceryList> {
 
     setState(() {
       _groceryItems = loadedData;
+      _isLoading = false;
     });
   }
 
@@ -59,7 +59,8 @@ class _GroceryListState extends State<GroceryList> {
       ),
     );
 
-    if (newItem == null) {   // back button was pressed instead of save button
+    if (newItem == null) {
+      // back button was pressed instead of save button
       return;
     }
 
@@ -79,6 +80,12 @@ class _GroceryListState extends State<GroceryList> {
     Widget content = const Center(
       child: Text("No items added yet!"),
     );
+
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
