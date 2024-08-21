@@ -14,6 +14,26 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
   final _newPlaceController = TextEditingController();
 
   @override
+  void dispose() {
+    _newPlaceController.dispose();
+    super.dispose();
+  }
+
+  void _savePlace() {
+    final enteredText = _newPlaceController.text;
+
+    if (enteredText.isEmpty) {
+      return;
+    }
+
+    ref //
+        .read(favoritePlacesProvider.notifier)
+        .addFavoritePlace(Place(title: enteredText));
+
+    Navigator.of(context).pop();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,52 +42,37 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
       body: Form(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _newPlaceController,
-                decoration: const InputDecoration(
-                  label: Text("New place"),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _newPlaceController,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  decoration: const InputDecoration(
+                    label: Text("New place"),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              FilledButton(
-                onPressed: () {
-                  if (!context.mounted) {
-                    return;
-                  }
-                  Navigator.of(context).pop();
-
-                  ref
-                      .read(favoritePlacesProvider.notifier)
-                      .addFavoritePlace(Place(id: _newPlaceController.text, title: _newPlaceController.text));
-                },
-                style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                const SizedBox(
+                  height: 16,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.add,
+                ElevatedButton.icon(
+                  onPressed: _savePlace,
+                  icon: Icon(
+                    Icons.add,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  label: Text(
+                    "Add Place",
+                    style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "Add Place",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),

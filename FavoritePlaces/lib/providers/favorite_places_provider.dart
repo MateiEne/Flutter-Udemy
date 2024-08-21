@@ -7,7 +7,7 @@ class FavoritePlacesNotifier extends StateNotifier<List<Place>> {
   void addFavoritePlace(Place place) {
     // final bool placeExists = state.contains(place); // state gives access to my state :) in this case List<Place>
 
-    state = [...state, place];
+    state = [place, ...state];
   }
 }
 

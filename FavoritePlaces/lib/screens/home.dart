@@ -1,5 +1,7 @@
 import 'package:favorite_places/models/place.dart';
 import 'package:favorite_places/screens/new_place.dart';
+import 'package:favorite_places/screens/place_details.dart';
+import 'package:favorite_places/widgets/places_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:favorite_places/providers/favorite_places_provider.dart';
@@ -34,15 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final List<Place> favoritePlaces = ref.watch(favoritePlacesProvider);
 
     if (favoritePlaces.isNotEmpty) {
-      content = ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        itemCount: favoritePlaces.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(favoritePlaces[index].title),
-          );
-        },
-      );
+      content = PlacesList(favoritePlaces: favoritePlaces);
     }
 
     return Scaffold(
