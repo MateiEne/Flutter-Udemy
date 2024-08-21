@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:favorite_places/models/place.dart';
 import 'package:favorite_places/providers/favorite_places_provider.dart';
+import 'package:favorite_places/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +15,7 @@ class NewPlace extends ConsumerStatefulWidget {
 
 class _NewPlaceState extends ConsumerState<NewPlace> {
   final _newPlaceController = TextEditingController();
+  File? _selectedImage;
 
   @override
   void dispose() {
@@ -22,13 +26,18 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
   void _savePlace() {
     final enteredText = _newPlaceController.text;
 
-    if (enteredText.isEmpty) {
+    if (enteredText.isEmpty || _selectedImage == null) {
       return;
     }
 
     ref //
         .read(favoritePlacesProvider.notifier)
-        .addFavoritePlace(Place(title: enteredText));
+        .addFavoritePlace(
+          Place(
+            title: enteredText,
+            image: _selectedImage!,
+          ),
+        );
 
     Navigator.of(context).pop();
   }
@@ -44,7 +53,6 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
                   controller: _newPlaceController,
@@ -55,9 +63,13 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
                     label: Text("New place"),
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
+                const SizedBox(height: 16),
+                ImageInput(
+                  onPickImage: (image) {
+                    _selectedImage = image;
+                  },
                 ),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: _savePlace,
                   icon: Icon(

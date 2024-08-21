@@ -36,7 +36,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final List<Place> favoritePlaces = ref.watch(favoritePlacesProvider);
 
     if (favoritePlaces.isNotEmpty) {
-      content = PlacesList(favoritePlaces: favoritePlaces);
+      content = Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PlacesList(favoritePlaces: favoritePlaces),
+      );
     }
 
     return Scaffold(

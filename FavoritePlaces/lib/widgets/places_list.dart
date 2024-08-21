@@ -20,10 +20,13 @@ class PlacesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
       itemCount: favoritePlaces.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
+          leading: CircleAvatar(
+            radius: 26,
+            backgroundImage: FileImage(favoritePlaces[index].image),
+          ),
           title: Text(favoritePlaces[index].title),
           onTap: () {
             _onSelectPlace(favoritePlaces[index], context);
