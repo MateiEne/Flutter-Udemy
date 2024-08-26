@@ -39,6 +39,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   uuid: ^4.4.2
   image_picker: ^1.0.8
+  location: ^6.0.2
 
 dev_dependencies:
   flutter_test:
